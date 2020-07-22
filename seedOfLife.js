@@ -40,30 +40,30 @@ const getIntersection = (circle1, circle2) => {
 
     return [xi, xi_prime, yi, yi_prime];
 };
-
+// Set the Radius for the encompassing circle and inner circles
 const outerRadius = 200;
 const innerRadius = 100;
-
+// Set canvas to size of drawing space and anchor to (0,0) of canvas
 const canvas = { width: 960, height: 580 };
 const anchor = { x: 240, y: 225 }
-
+// Set starting points for first circles
 const startX = anchor.x + (canvas.width / 2);
 const startY = anchor.y + (canvas.height / 2) - (outerRadius / 2);
 
 let intersection;
-
+// Dimensions of first circles
 const outerCircle  = { x: startX, y: startY, radius: outerRadius };
 const innerCircle  = { x: startX, y: startY, radius: innerRadius };
 const topCircle    = { x: startX, y: startY - innerRadius, radius: innerRadius };
 const bottomCircle = { x: startX, y: startY + innerRadius, radius: innerRadius };
-
+// determine starting point off of intersection for top overlapping circles
 intersection = getIntersection(innerCircle, topCircle);
-
+// dimensions referencing intersections as starting points for overlapping circles
 const topLeftCircle =  { x: intersection[0], y: intersection[2], radius: innerRadius };
 const topRightCircle = { x: intersection[1], y: intersection[2], radius: innerRadius };
-
+// determine starting point off of intersection for bottom overlapping circles
 intersection = getIntersection(innerCircle, bottomCircle);
-
+// dimensions referencing intersections as starting points for overlapping circles
 const bottomLeftCircle =  { x: intersection[0], y: intersection[2], radius: innerRadius };
 const bottomRightCircle = { x: intersection[1], y: intersection[2], radius: innerRadius };
 
@@ -77,9 +77,9 @@ const circles = [
     bottomLeftCircle,
     bottomRightCircle
 ];
-
+// Set mouse speed to not be terribly slow but slow enough it can keep up
 robot.setMouseDelay(5);
-
+// mouse coordinates for drawing the circle
 const drawCircle = radius => {
     
     const mousePos = robot.getMousePos();
@@ -91,11 +91,11 @@ const drawCircle = radius => {
         robot.dragMouse(x, y);
     }
 };
-
+// function that will delay the rest of the functions from performing for a set amount of time(Have to set page to full screen everytime. this gives me time)
 function sleep(ms) {
     Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
 };
-
+// the actually drawing of the circle. Allows the mouse to reposition to next starting point before pressing mouse down 
 function draw() {
 circles.forEach(circle => {
     robot.moveMouse(circle.x, circle.y);
@@ -107,6 +107,7 @@ circles.forEach(circle => {
     robot.mouseToggle('up');
 });
 };
+// Print from console at start of application telling user to move the screen and providing a countdown
 function start() {
     console.log("Position Screen");
     console.log("5...");
@@ -119,12 +120,16 @@ function start() {
     sleep(1000);
     console.log("1...");
     sleep(1000);
+    // we want our mouse to start at our anchor point (0,0) of the canvas
     robot.moveMouse(240, 225); 
 };
+
 function main() {
 start();
 draw();
 console.log("Complete");
 };
+
+
 main();
 
